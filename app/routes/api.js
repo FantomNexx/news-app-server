@@ -3,17 +3,16 @@ let MArticle = require('../models/article');
 
 const OnPostArticleCreate = function (req, res) {
 
-    console.log('OnPostArticleCreate');
-
-    let data = req.body.data;
+    let article_data = req.body.params.article;
 
     let article = new MArticle({
-        author: data.author,
-        content: data.content,
-        title: data.title
+        author: article_data.author,
+        content: article_data.content,
+        title: article_data.title,
+        created: article_data.created,
     });
 
-    const OnSave = function (err) {
+    const onCreate = function (err) {
 
         if (err) {
             res.send(err);
@@ -24,9 +23,48 @@ const OnPostArticleCreate = function (req, res) {
             success: true,
             message: 'Article has been created!'
         });
-    };//OnSave
+    };//onCreate
 
-    article.save(OnSave);
+    MArticle.create(article, onCreate);
+};//OnPostArticleCreate
+
+
+const OnPostArticleUpdate = function (req, res) {
+
+    let article_data = req.body.params.article;
+
+    const onUpdate = function (err, result) {
+        if (err) {
+            res.send(err);
+            return;
+        }//if err
+        res.json({
+            success: true,
+            message: 'Article has been edited!'
+        });
+    };//onUpdate
+
+    MArticle.updateOne({_id: article_data._id}, article_data, onUpdate);
+};//OnPostArticleCreate
+
+
+const OnPostArticleRemove = function (req, res) {
+
+    let article_id_to_remove = req.body.params.article_id_to_remove;
+
+    const onRemove = function (err, result) {
+
+        if (err) {
+            res.send(err);
+            return;
+        }//if err
+        res.json({
+            success: true,
+            message: 'Article has been removed!'
+        });
+    };//onUpdate
+
+    MArticle.remove({_id: article_id_to_remove}, onRemove);
 };//OnPostArticleCreate
 
 
@@ -37,11 +75,13 @@ const OnGetArticles = function (req, res) {
             res.send(err);
             return;
         }//if
+
         res.json(articles);
     };//OnUserFind
 
     MArticle.find({}, OnArticlesFind);
 };//OnGetArticles
+
 
 const OnGetRoot = function (req, res) {
     const result = {
@@ -57,6 +97,8 @@ const API = function (app, express) {
     let api = express.Router();
 
     api.post('/article_create', OnPostArticleCreate);
+    api.post('/article_update', OnPostArticleUpdate);
+    api.post('/article_remove', OnPostArticleRemove);
     api.get('/articles', OnGetArticles);
     api.get('/check_root', OnGetRoot);
 
