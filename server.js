@@ -25,8 +25,11 @@ app.use(morgan('dev'));
 
 // app.use(express.static(__dirname + '/public'));
 
-let api = require('./app/routes/api')(app, express);
-app.use('/api', api);
+let api_article = require('./app/routes/api_article')(app, express);
+app.use('/api_article', api_article);
+
+let api_article_source = require('./app/routes/api_article_source')(app, express);
+app.use('/api_article_source', api_article_source);
 
 
 /*

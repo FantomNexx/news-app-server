@@ -1,7 +1,6 @@
 let MArticle = require('../models/article');
 
-
-const OnPostArticleCreate = function (req, res) {
+const OnPostCreate = function (req, res) {
 
     let article_data = req.body.params.article;
 
@@ -10,6 +9,7 @@ const OnPostArticleCreate = function (req, res) {
         content: article_data.content,
         title: article_data.title,
         created: article_data.created,
+        source: article_data.source,
     });
 
     const onCreate = function (err) {
@@ -26,10 +26,10 @@ const OnPostArticleCreate = function (req, res) {
     };//onCreate
 
     MArticle.create(article, onCreate);
-};//OnPostArticleCreate
+};//OnPostCreate
 
 
-const OnPostArticleUpdate = function (req, res) {
+const OnPostUpdate = function (req, res) {
 
     let article_data = req.body.params.article;
 
@@ -45,10 +45,10 @@ const OnPostArticleUpdate = function (req, res) {
     };//onUpdate
 
     MArticle.updateOne({_id: article_data._id}, article_data, onUpdate);
-};//OnPostArticleCreate
+};//OnPostCreate
 
 
-const OnPostArticleRemove = function (req, res) {
+const OnPostRemove = function (req, res) {
 
     let article_id_to_remove = req.body.params.article_id_to_remove;
 
@@ -64,8 +64,8 @@ const OnPostArticleRemove = function (req, res) {
         });
     };//onUpdate
 
-    MArticle.remove({_id: article_id_to_remove}, onRemove);
-};//OnPostArticleCreate
+    MArticle.deleteOne({_id: article_id_to_remove}, onRemove);
+};//OnPostCreate
 
 
 const OnGetArticles = function (req, res) {
@@ -79,32 +79,23 @@ const OnGetArticles = function (req, res) {
         res.json(articles);
     };//OnUserFind
 
-    MArticle.find({}, OnArticlesFind);
+    MArticle.find({}, OnArticlesFind).sort({'created': -1}).limit(40);
 };//OnGetArticles
 
 
-const OnGetRoot = function (req, res) {
-    const result = {
-        success: true,
-        message: 'Yep, its root!'
-    };
-    res.json(result);
-};//OnGetRoot
-
-
-const API = function (app, express) {
+const API_article = function (app, express) {
 
     let api = express.Router();
 
-    api.post('/article_create', OnPostArticleCreate);
-    api.post('/article_update', OnPostArticleUpdate);
-    api.post('/article_remove', OnPostArticleRemove);
+    api.post('/article_create', OnPostCreate);
+    api.post('/article_update', OnPostUpdate);
+    api.post('/article_remove', OnPostRemove);
+
     api.get('/articles', OnGetArticles);
-    api.get('/check_root', OnGetRoot);
 
     return api;
 };//ArticleCreate
 
 
-module.exports = API;
-//GET example localhost:3000/api/users
+module.exports = API_article;
+//GET example localhost:3000/api_article/articles

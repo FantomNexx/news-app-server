@@ -2,14 +2,14 @@ let mongoose = require('mongoose');
 
 let Schema = mongoose.Schema;
 
-const image_url_default = 'https://raw.githubusercontent.com/snwh/paper-icon-theme/master/Paper/512x512/apps/preferences-color.png';
-
 let ArticleSchema = new Schema({
+    uid: {type: String, default: ''},
     author: {type: String, default: ''},
     title: {type: String, default: ''},
     content: {type: String, default: ''},
-    created: {type: Date, default: Date.now}
-    //thumb: {type: String, default: image_url_default}
+    created: {type: String, default: ''},
+    source: {type: String, default: ''},
+    url: {type: String, default: ''},
 });
 
 module.exports = mongoose.model('MArticle', ArticleSchema);
