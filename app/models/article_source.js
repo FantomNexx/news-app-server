@@ -14,6 +14,11 @@ let ArticleSourceSchema = new Schema({
         default: '',
         required: true
     },
+    icon_url: {
+        type: String,
+        default: '',
+        required: true
+    },
 });
 
 module.exports = mongoose.model('MArticleSource', ArticleSourceSchema);

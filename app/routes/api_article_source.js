@@ -62,7 +62,10 @@ const OnPostUpdate = async function (req, res) {
     let source_data = req.body;
 
     try {
-        await MArticleSource.updateOne({name: source_data.name}, source_data);
+        await MArticleSource.updateOne({
+            name: source_data.name
+        }, source_data);
+
     } catch (ex) {
         res.send({
             success: false,
@@ -105,9 +108,9 @@ const OnPostLoadArticles = async function (req, res) {
 
     let article_loader = new ArticleLoader();
 
-    try{
+    try {
         await article_loader.LoadNewArticles();
-    }catch (ex) {
+    } catch (ex) {
         res.json({
             success: false,
             message: ex.message
@@ -122,6 +125,22 @@ const OnPostLoadArticles = async function (req, res) {
 };//OnPostRemove
 
 
+const OnGetArticleSources = async function (req, res) {
+
+    const OnArticesGet = function (err, articles) {
+        if (err) {
+            res.send(err);
+            return;
+        }//if
+
+        res.json(articles);
+    };//OnArticesGet
+
+    MArticleSource.find({}, OnArticesGet).limit(40);
+
+};//OnPostRemove
+
+
 const API_article_source = function (app, express) {
 
     let api = express.Router();
@@ -129,6 +148,8 @@ const API_article_source = function (app, express) {
     api.post('/article_source_create', OnPostCreate);
     api.post('/article_source_update', OnPostUpdate);
     api.post('/article_source_remove', OnPostRemove);
+
+    api.get('/article_sources', OnGetArticleSources);
 
     api.post('/article_source_load_articles', OnPostLoadArticles);
 
@@ -140,7 +161,6 @@ module.exports = API_article_source;
 //GET example localhost:3000/api_article_source/article_source_create
 
 /*
-
 
     let source = null;
     try {

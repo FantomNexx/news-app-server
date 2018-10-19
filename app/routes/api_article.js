@@ -77,7 +77,7 @@ const OnGetArticles = function (req, res) {
         }//if
 
         res.json(articles);
-    };//OnUserFind
+    };//OnArticlesFind
 
     MArticle.find({}, OnArticlesFind).sort({'created': -1}).limit(40);
 };//OnGetArticles
